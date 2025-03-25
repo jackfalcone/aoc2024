@@ -45,6 +45,7 @@ const Day01 = () => {
             <h1>Day 01</h1>
             <h2>Part A</h2>
             <p>Total difference: {totalDiff}</p>
+            <p className="text-6xl text-red-700">Hallo Luca, was geht?</p>
         </div>
     )
 }
