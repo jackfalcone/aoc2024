@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Part from './Part';
+import Solution from './Solution';
 
 const Day01 = () => {
     const [totalDiff, setTotalDiff] = useState(0);
@@ -7,7 +9,6 @@ const Day01 = () => {
         fetch('/resources/day01_a.txt')
             .then(response => response.text())
             .then(data => {
-                console.log(data);
                 const locationList = data.split('\n');
                 const left = [];
                 const right = [];
@@ -42,10 +43,8 @@ const Day01 = () => {
 
     return (
         <div>
-            <h1>Day 01</h1>
-            <h2>Part A</h2>
-            <p>Total difference: {totalDiff}</p>
-            <p className="text-6xl text-red-700">Hallo Luca, was geht?</p>
+            <Part partLetter="A" />
+            <Solution solutionText="Total difference" solutionValue={totalDiff} />
         </div>
     )
 }
