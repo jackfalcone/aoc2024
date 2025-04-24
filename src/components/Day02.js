@@ -29,32 +29,38 @@ const Day02 = () => {
     useEffect(() => {
         if (reportLevels.length > 0) {
             const reportLevelsArr = [...reportLevels];
-            const safeReportLevelsArr = [];
-            const unsafeReportLevelsArr = [];
-            reportLevelsArr.forEach(reportLevel => {
-                const positiveSteps = [];
-                const stepsAmount = [];
-                for (let i = 0; i < reportLevel.length; i++) {
-                    if (i > 0) {
-                        const step = (reportLevel[i] > reportLevel[i - 1]) ? true : false;
-                        positiveSteps.push(step);
-                        stepsAmount.push(Math.abs(reportLevel[i] - reportLevel[i - 1]));
-                    }
-                }
-                if (positiveSteps.every(step => step === true) || positiveSteps.every(step => step === false)) {
-                    if (stepsAmount.every(step => [1, 2, 3].includes(step))) {
-                        safeReportLevelsArr.push(reportLevel);
-                    } else {
-                        unsafeReportLevelsArr.push(reportLevel);
-                    }   
-                } else {
-                    unsafeReportLevelsArr.push(reportLevel);
-                }
-            })
+            const {safeReportLevelsArr, unsafeReportLevelsArr} = checkReportLevels(reportLevelsArr);
             setSafeReportLevels(safeReportLevelsArr);
             setUnsafeReportLevels(unsafeReportLevelsArr);
         }
     }, [reportLevels])
+
+    const checkReportLevels = reportLevelsArr => {
+        const safeReportLevelsArr = [];
+        const unsafeReportLevelsArr = [];
+        reportLevelsArr.forEach(reportLevel => {
+            const positiveSteps = [];
+            const stepsAmount = [];
+            for (let i = 0; i < reportLevel.length; i++) {
+                if (i > 0) {
+                    const step = (reportLevel[i] > reportLevel[i - 1]) ? true : false;
+                    positiveSteps.push(step);
+                    stepsAmount.push(Math.abs(reportLevel[i] - reportLevel[i - 1]));
+                }
+            }
+            if (positiveSteps.every(step => step === true) || positiveSteps.every(step => step === false)) {
+                if (stepsAmount.every(step => [1, 2, 3].includes(step))) {
+                    safeReportLevelsArr.push(reportLevel);
+                } else {
+                    unsafeReportLevelsArr.push(reportLevel);
+                }   
+            } else {
+                unsafeReportLevelsArr.push(reportLevel);
+            }
+        });
+
+        return {safeReportLevelsArr, unsafeReportLevelsArr};
+    };
 
     return (
         <div>
