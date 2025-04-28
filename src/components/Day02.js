@@ -3,9 +3,13 @@ import Part from "./Part";
 import Solution from "./Solution";
 
 const Day02 = () => {
-    const [reportLevels, setReportLevels] = useState([]);
-    const [safeReportLevels, setSafeReportLevels] = useState([]);
-    const [unsafeReportLevels, setUnsafeReportLevels] = useState([]);
+    const [reportLevels, setReportLevels] = useState({
+        initialReports: [],
+        safeReports: [],
+        unsafeReports: [],
+        dampedSafeReports: [],
+        dampedUnsafeReports: [],
+    });
 
     useEffect(() => {
         fetch('/resources/day02.txt')
@@ -19,7 +23,10 @@ const Day02 = () => {
                     reportsLevelsStructured.push(reportLevel);
                 });
 
-                setReportLevels(reportsLevelsStructured);
+                setReportLevels(prev => ({
+                    ...prev,
+                    initialReports: reportsLevelsStructured
+                }));
             })
             .catch(error => {
                 console.error(error);
@@ -27,18 +34,48 @@ const Day02 = () => {
     }, [])
 
     useEffect(() => {
-        if (reportLevels.length > 0) {
-            const reportLevelsArr = [...reportLevels];
-            const {safeReportLevelsArr, unsafeReportLevelsArr} = checkReportLevels(reportLevelsArr);
-            setSafeReportLevels(safeReportLevelsArr);
-            setUnsafeReportLevels(unsafeReportLevelsArr);
+        if (reportLevels.initialReports.length > 0) {
+            const safeReportLevelsArr = [];
+            const unsafeReportLevelsArr = [];
+            const reportLevelsArr = [...reportLevels.initialReports];
+            reportLevelsArr.forEach(reportLevel => {
+                const [isSafe, reportLevelChecked] = checkReportLevels(reportLevel);
+                (isSafe) ? safeReportLevelsArr.push(reportLevelChecked) : unsafeReportLevelsArr.push(reportLevelChecked);
+            });
+            setReportLevels(prev => ({
+                ...prev,
+                safeReports: safeReportLevelsArr,
+                unsafeReports: unsafeReportLevelsArr
+            }));
         }
-    }, [reportLevels])
+    }, [reportLevels.initialReports])
+    
+    useEffect(() => {
+        if (reportLevels.unsafeReports.length > 0) {
+            const dampedSafeReportLevelsArr = [];
+            const unsafeReportLevelsArr = [...reportLevels.unsafeReports];
+            unsafeReportLevelsArr.forEach(reportLevel => {
+                for (let i = 0; i < reportLevel.length; i++) {
+                    const originalReportLevel = [...reportLevel];
+                    const modifiedReportLevel = [...reportLevel];
+                    modifiedReportLevel.splice(i, 1);
+                    const [isSafe, reportLevelChecked] = checkReportLevels(modifiedReportLevel);
+                    if (isSafe) {
+                        dampedSafeReportLevelsArr.push(originalReportLevel);
+                        break;
+                    }
+                }
+            })
+            setReportLevels(prev => ({
+                ...prev,
+                dampedSafeReports: dampedSafeReportLevelsArr
+            }));
+        }
+    }, [reportLevels.unsafeReports])
+    
 
-    const checkReportLevels = reportLevelsArr => {
-        const safeReportLevelsArr = [];
-        const unsafeReportLevelsArr = [];
-        reportLevelsArr.forEach(reportLevel => {
+    const checkReportLevels = reportLevel => {
+            let isSafe = false;
             const positiveSteps = [];
             const stepsAmount = [];
             for (let i = 0; i < reportLevel.length; i++) {
@@ -50,22 +87,22 @@ const Day02 = () => {
             }
             if (positiveSteps.every(step => step === true) || positiveSteps.every(step => step === false)) {
                 if (stepsAmount.every(step => [1, 2, 3].includes(step))) {
-                    safeReportLevelsArr.push(reportLevel);
-                } else {
-                    unsafeReportLevelsArr.push(reportLevel);
-                }   
-            } else {
-                unsafeReportLevelsArr.push(reportLevel);
+                    isSafe = true;
+                }
             }
-        });
 
-        return {safeReportLevelsArr, unsafeReportLevelsArr};
+        return [isSafe, reportLevel];
     };
 
     return (
         <div>
             <Part partLetter="A" />
-            <Solution solutionText={"Safe reports amount"} solutionValue={safeReportLevels.length} />
+            <Solution solutionText={"Safe reports amount"} solutionValue={reportLevels.safeReports.length} />
+            <Solution solutionText={"Unsafe reports amount"} solutionValue={reportLevels.unsafeReports.length} />
+            <Part partLetter="B" />
+            <Solution solutionText={"Damped Safe reports amount"} solutionValue={reportLevels.dampedSafeReports.length} />
+            <Solution solutionText={"Reports safe combined"} solutionValue={reportLevels.dampedSafeReports.length + reportLevels.safeReports.length} />
+            <Solution solutionText={"Damped unsafe reports amount"} solutionValue={reportLevels.unsafeReports.length - reportLevels.dampedSafeReports.length} />
         </div>
     )
 }
