@@ -100,7 +100,7 @@ const Day02 = () => {
             <Solution solutionText={"Safe reports amount"} solutionValue={reportLevels.safeReports.length} />
             <Solution solutionText={"Unsafe reports amount"} solutionValue={reportLevels.unsafeReports.length} />
             <Part partLetter="B" />
-            <Solution solutionText={"Damped Safe reports amount"} solutionValue={reportLevels.dampedSafeReports.length} />
+            <Solution solutionText={"Damped safe reports amount"} solutionValue={reportLevels.dampedSafeReports.length} />
             <Solution solutionText={"Reports safe combined"} solutionValue={reportLevels.dampedSafeReports.length + reportLevels.safeReports.length} />
             <Solution solutionText={"Damped unsafe reports amount"} solutionValue={reportLevels.unsafeReports.length - reportLevels.dampedSafeReports.length} />
         </div>
