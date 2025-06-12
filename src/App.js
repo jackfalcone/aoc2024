@@ -3,6 +3,7 @@ import Day from './components/Day';
 import Day01 from './components/Day01';
 import Day02 from './components/Day02';
 import Day03 from './components/Day03';
+import Day04 from './components/Day04';
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
         <Day02 />
         <Day dayNum="03" />
         <Day03 />
+        <Day dayNum="04" />
+        <Day04 />
       </div>
     </div>
   );
